@@ -2,6 +2,7 @@ from tensorflow.keras import layers, initializers, backend, regularizers, Model,
 from qkeras           import QDense, quantized_bits
 
 import keras
+import itertools
 import tensorflow as tf
 import numpy      as np
 
