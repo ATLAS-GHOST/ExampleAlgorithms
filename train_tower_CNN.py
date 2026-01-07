@@ -125,8 +125,8 @@ if "delphes" in sample:
     path         = get_config(sample)["dir"]
     name         = get_config(sample)["keyword"]
     data         = ak.from_parquet(path+'/'+name)
-    towers       = data['Towers']
-    tower_labels = data['Towers_NoPU']
+    towers       = ak.to_numpy(data['Towers'])
+    tower_labels = ak.to_numpy(data['Towers_NoPU'])
 else:
     cells        = get_data(get_config(sample), filter_name="cell_*")
     towers       = cells_to_towers(cells)
