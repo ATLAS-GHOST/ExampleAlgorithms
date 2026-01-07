@@ -1,4 +1,5 @@
 from tensorflow.keras import layers, initializers, backend, regularizers, Model, Input
+from qkeras           import QDense, quantized_bits
 
 import keras
 import tensorflow as tf
