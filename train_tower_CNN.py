@@ -42,11 +42,11 @@ def build_regressor(hp):
 
     if use_abseta:
         aux_input_shape = (None, None, 1)
-        aux_inputs = Input(aux_input_shape)
+        aux_inputs      = Input(aux_input_shape)
 
     else:
         aux_input_shape = None
-
+    
     weights = QuantisedCNN(
         size               = size,
         depth_multiplier   = 4,  # hp.Choice("depth_mult", [1, 2, 3, 4]),
