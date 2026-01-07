@@ -1,6 +1,6 @@
-from fastml.modules.cnn import QuantisedCNN
-from fastml.utils.image import cells_to_towers, pad, sliding_window, get_tower_eta
-from fastml.utils.misc  import get_config, get_data
+from modules.cnn import QuantisedCNN
+from utils.image import cells_to_towers, pad, sliding_window, get_tower_eta
+from utils.misc  import get_config, get_data
 
 from tensorflow.keras import (
     losses,
