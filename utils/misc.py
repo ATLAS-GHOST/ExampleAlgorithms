@@ -8,6 +8,34 @@ import functools
 
 print = functools.partial(print, flush=True)
 
+def get_config(sample):
+    return json.load(open('configs/samples.json'))[sample]
+
+def get_data(config, **kwargs):
+    files = [
+        config['dir'] + '/' + f
+        for f in os.listdir(config['dir'])
+        if config['keyword'] in f and '.root' in f
+    ]
+    events = uproot.concatenate(files, **kwargs)
+
+    if 'EventWeight' in events.fields:
+        weights = ak.to_numpy(events['EventWeight'][:, 0])
+        events['weight'] = (
+            weights
+            * config['xsec']
+            * config['hstp_filter_sf']
+            * config['filter_eff']
+            / weights.sum()
+        )
+        events = ak.without_field(events, where = 'EventWeight')
+
+    for var in ['cell_et', 'cell_et_mu0']:
+        if var in events.fields:
+            events[var] = events[var] / 1000
+
+    return events
+
 def awkward_to_vector(obj):
     if "pt" in obj.fields:
         return vector.zip({"pt": obj.pt, "eta": obj.eta, "phi": obj.phi, "m": obj.m})

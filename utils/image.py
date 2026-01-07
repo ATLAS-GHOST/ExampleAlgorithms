@@ -6,6 +6,49 @@ import vector
 
 from utils.cells import get_layer, to_4momentum, remove_transition
 
+def cells_to_towers(cells, Et_key='cell_et'):
+    cells        = remove_transition(cells)
+    cell_layer   = get_layer(cells.cell_sampling)
+    cell_vectors = to_4momentum(cells, Et_key=Et_key)
+
+    cell_eta     = cell_vectors.eta
+    cell_eta     = (
+        cell_eta
+        + ak.where((cell_eta > 1.5 ) & (cell_layer == 2), -0.01, 0)
+        + ak.where((cell_eta < -1.5) & (cell_layer == 2), +0.01, 0)
+        + ak.where((cell_eta > 0.1 ) & (cell_eta < 1.4) & (cell_layer == 1), -0.005, 0)
+    )
+
+    cell_vectors = vector.zip(
+        {
+            "pt" : cell_vectors.pt,
+            "m"  : cell_vectors.m,
+            "eta": cell_eta,
+            "phi": cell_vectors.phi,
+        }
+    )
+
+    towers = np.concatenate(
+        [vector_to_tower(cell_vectors[cell_layer == layer]) for layer in range(6)],
+        axis = -1,
+    )
+
+    return towers
+
+def sliding_window(x, size):
+    assert x.ndim == 4
+    px      = pad(x, (size - 1) // 2)
+    windows = skimage.util.view_as_windows(
+        px, window_shape = (1, size, size, px.shape[-1]), step = 1
+    )
+
+    return windows
+
+def get_tower_eta(X):
+    eta_idxs = np.indices(X[..., :1].shape)[1]
+
+    return (eta_idxs - np.median(eta_idxs)) * 0.1
+
 def vector_to_tower(
         vectors,
         eta_edges = np.linspace(-2.5  , 2.5  , 51),
