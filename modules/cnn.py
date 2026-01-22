@@ -76,4 +76,4 @@ def QuantisedCNN(
         outputs = output[0]            if len(outputs) == 0 else outputs,
         name    = name)
 
-    return name
+    return model
