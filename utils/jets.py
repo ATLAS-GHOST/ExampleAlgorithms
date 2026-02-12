@@ -21,13 +21,13 @@ def truth_match(recon, truth, max_dR=0.4, bijective=False):
         a_unique = a_sorted[keep]
         b_unique = b_sorted[keep]
 
-        restore = ak.argsort(order[kee], axis=-1)
+        restore = ak.argsort(order[keep], axis=-1)
         return a_unique[restore], b_unique[restore]
     
     if len(truth) != len(recon):
         raise ValueError("Truth and reconstructed jet collections must have the same length.")
     
-    recon_idxs, truth_idxs = ak.unzip(ak.argcartersian([recon, truth]))
+    recon_idxs, truth_idxs = ak.unzip(ak.argcartesian([recon, truth]))
 
     dR = recon[recon_idxs].deltaR(truth[truth_idxs])    
 
